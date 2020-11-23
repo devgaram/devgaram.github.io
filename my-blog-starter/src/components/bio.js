@@ -6,13 +6,13 @@
  */
 
 import React from "react"
-import { useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql, Link } from "gatsby"
 import Image from "gatsby-image"
 
 const Bio = () => {
   const data = useStaticQuery(graphql`
     query BioQuery {
-      avatar: file(absolutePath: { regex: "/profile-pic.jpg/" }) {
+      avatar: file(absolutePath: { regex: "/profile-pic.jpeg/" }) {
         childImageSharp {
           fixed(width: 50, height: 50, quality: 95) {
             ...GatsbyImageSharpFixed
@@ -27,6 +27,8 @@ const Bio = () => {
           }
           social {
             twitter
+            github
+            gmail
           }
         }
       }
@@ -52,13 +54,24 @@ const Bio = () => {
         />
       )}
       {author?.name && (
-        <p>
-          Written by <strong>{author.name}</strong> {author?.summary || null}
-          {` `}
-          <a href={`https://twitter.com/${social?.twitter || ``}`}>
-            You should follow them on Twitter
-          </a>
-        </p>
+        <div>
+          <p>
+            안녕하세요, <strong>{author.name}</strong> 입니다.&nbsp;
+            {author?.summary || null}
+            &nbsp;
+          </p>
+          <div>
+            <Link to="/about">👉이력서</Link>
+            &nbsp;|&nbsp;
+            <a href={`https://twitter.com/${social?.twitter || ``}`}>
+              👉트위터
+            </a>
+            &nbsp;|&nbsp;
+            <a href={`https://github.com/${social?.github || ``}`}>👉깃허브</a>
+            &nbsp;|&nbsp;
+            <a href={`mailto:${social?.gmail || ``}@gmail.com`}>👉지메일</a>
+          </div>
+        </div>
       )}
     </div>
   )

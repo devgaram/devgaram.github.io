@@ -1,17 +1,26 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `보노보노의 평화로운 개발 이야기`,
     author: {
-      name: `Kyle Mathews`,
-      summary: `who lives and works in San Francisco building useful things.`,
+      name: `보노보노`,
+      summary: `ASP 웹 개발로 개발자의 길을 시작했고 현재는 프론트엔드 개발자로 일하고 있습니다. 유저의 행동을 예측하고 최적의 UI/UX를 제공하는 것을 좋아합니다. 최근에는 트위터를 시작했습니다.`,
     },
-    description: `A starter blog demonstrating what Gatsby can do.`,
-    siteUrl: `https://gatsby-starter-blog-demo.netlify.app/`,
+    description: `보노보노의 평화로운 개발 이야기`,
+    siteUrl: `https://devgaram.github.io/`,
     social: {
-      twitter: `kylemathews`,
+      twitter: `devramiiii`,
+      github: `devgaram`,
+      gmail: `devgrlee`,
     },
   },
   plugins: [
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/src/pages`,
+        name: `pages`,
+      },
+    },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -24,6 +33,12 @@ module.exports = {
       options: {
         path: `${__dirname}/content/assets`,
         name: `assets`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-styled-components`,
+      options: {
+        // Add any options here
       },
     },
     {
