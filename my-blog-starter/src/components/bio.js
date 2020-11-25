@@ -61,15 +61,33 @@ const Bio = () => {
             &nbsp;
           </p>
           <div>
-            <Link to="/about">👉이력서</Link>
+            <Link to="/about">
+              <span role="img" aria-label="resume">
+                👉
+              </span>
+              이력서
+            </Link>
             &nbsp;|&nbsp;
             <a href={`https://twitter.com/${social?.twitter || ``}`}>
-              👉트위터
+              <span role="img" aria-label="twitter">
+                👉
+              </span>
+              트위터
             </a>
             &nbsp;|&nbsp;
-            <a href={`https://github.com/${social?.github || ``}`}>👉깃허브</a>
+            <a href={`https://github.com/${social?.github || ``}`}>
+              <span role="img" aria-label="github">
+                👉
+              </span>
+              깃허브
+            </a>
             &nbsp;|&nbsp;
-            <a href={`mailto:${social?.gmail || ``}@gmail.com`}>👉지메일</a>
+            <a href={`mailto:${social?.gmail || ``}@gmail.com`}>
+              <span role="img" aria-label="gmail">
+                👉
+              </span>
+              지메일
+            </a>
           </div>
         </div>
       )}
