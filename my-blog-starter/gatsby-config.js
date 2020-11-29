@@ -1,3 +1,7 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
 module.exports = {
   siteMetadata: {
     title: `보노보노의 평화로운 개발 이야기`,
@@ -85,7 +89,21 @@ module.exports = {
       },
     },
     `gatsby-plugin-react-helmet`,
-    `gatsby-theme-apollo`,
+    {
+      resolve: "gatsby-source-graphql",
+      options: {
+        typeName: "GitHub",
+        fieldName: "github",
+        url: "https://api.github.com/graphql",
+        headers: {
+          // Learn about environment variables: https://gatsby.dev/env-vars
+          Authorization: `bearer ${process.env.GATSBY_GITHUB_TOKEN}`,
+        },
+        // Additional options to pass to node-fetch
+        fetchOptions: {},
+      },
+    },
+
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

@@ -1,6 +1,10 @@
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
+const removeExtension = filename => {
+  return /.+(?=\.)/g.exec(filename)
+}
+
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 
@@ -11,14 +15,28 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const result = await graphql(
     `
       {
-        allMarkdownRemark(
-          sort: { fields: [frontmatter___date], order: ASC }
-          limit: 1000
-        ) {
-          nodes {
-            id
-            fields {
-              slug
+        github {
+          repository(name: "TIL", owner: "devgaram") {
+            categories: object(expression: "master:") {
+              ... on GitHub_Tree {
+                entries {
+                  name
+                  type
+                  posts: object {
+                    ... on GitHub_Tree {
+                      entries {
+                        name
+                        oid
+                        content: object {
+                          ... on GitHub_Blob {
+                            text
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -34,22 +52,43 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     return
   }
 
-  const posts = result.data.allMarkdownRemark.nodes
+  const posts = result.data.github
+
+  const sortedPosts = posts.repository.categories.entries
+    .map(({ type, name: category, posts }) => {
+      if (type !== "tree") return []
+
+      return posts.entries
+        .filter(({ name }) => name !== "images")
+        .map(({ name, oid, content }) => {
+          return { category, name, oid, content }
+        })
+    })
+    .flat()
+    .sort((a, b) => {
+      const aTime = new Date(a.name.substring(0, 10)).getTime()
+      const bTime = new Date(b.name.substring(0, 10)).getTime()
+
+      if (aTime > bTime) return -1
+      if (aTime < bTime) return 1
+      return 0
+    })
 
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
   // `context` is available in the template as a prop and as a variable in GraphQL
 
-  if (posts.length > 0) {
-    posts.forEach((post, index) => {
-      const previousPostId = index === 0 ? null : posts[index - 1].id
-      const nextPostId = index === posts.length - 1 ? null : posts[index + 1].id
+  if (sortedPosts.length > 0) {
+    sortedPosts.forEach(({ category, name, oid, content }, index) => {
+      const previousPostId = index === 0 ? null : sortedPosts[index - 1].oid
+      const nextPostId =
+        index === sortedPosts.length - 1 ? null : sortedPosts[index + 1].oid
 
       createPage({
-        path: post.fields.slug,
+        path: oid,
         component: blogPost,
         context: {
-          id: post.id,
+          id: oid,
           previousPostId,
           nextPostId,
         },

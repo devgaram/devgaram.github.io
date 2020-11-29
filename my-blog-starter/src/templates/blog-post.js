@@ -4,31 +4,26 @@ import { Link, graphql } from "gatsby"
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import ConvertHTML from "../components/convertHTML"
+import { getTitleRegExp, getDateRegExp, removeExtension } from "../utils/regExp"
 
 const BlogPostTemplate = ({ data, location }) => {
-  const post = data.markdownRemark
   const siteTitle = data.site.siteMetadata?.title || `Title`
-  const { previous, next } = data
+  const { previous, current, next } = data
+
+  const prevPost = previous.repository.post
+  const currentPost = current.repository.post.text
+  const nextPost = next.repository.post
 
   return (
     <Layout location={location} title={siteTitle}>
-      <SEO
-        title={post.frontmatter.title}
-        description={post.frontmatter.description || post.excerpt}
-      />
+      <SEO title={getTitleRegExp(currentPost).toString()} description="" />
       <article
         className="blog-post"
         itemScope
         itemType="http://schema.org/Article"
       >
-        <header>
-          <h1 itemProp="headline">{post.frontmatter.title}</h1>
-          <p>{post.frontmatter.date}</p>
-        </header>
-        <section
-          dangerouslySetInnerHTML={{ __html: post.html }}
-          itemProp="articleBody"
-        />
+        <ConvertHTML html={currentPost} />
         <hr />
         <footer>
           <Bio />
@@ -45,16 +40,16 @@ const BlogPostTemplate = ({ data, location }) => {
           }}
         >
           <li>
-            {previous && (
-              <Link to={previous.fields.slug} rel="prev">
-                ← {previous.frontmatter.title}
+            {prevPost && (
+              <Link to={`/${prevPost.oid}`} rel="prev">
+                ← {getTitleRegExp(prevPost.text)}
               </Link>
             )}
           </li>
           <li>
-            {next && (
-              <Link to={next.fields.slug} rel="next">
-                {next.frontmatter.title} →
+            {nextPost && (
+              <Link to={`/${nextPost.oid}`} rel="next">
+                {getTitleRegExp(nextPost.text)} →
               </Link>
             )}
           </li>
@@ -68,39 +63,43 @@ export default BlogPostTemplate
 
 export const pageQuery = graphql`
   query BlogPostBySlug(
-    $id: String!
-    $previousPostId: String
-    $nextPostId: String
+    $id: GitHub_GitObjectID
+    $previousPostId: GitHub_GitObjectID
+    $nextPostId: GitHub_GitObjectID
   ) {
     site {
       siteMetadata {
         title
       }
     }
-    markdownRemark(id: { eq: $id }) {
-      id
-      excerpt(pruneLength: 160)
-      html
-      frontmatter {
-        title
-        date(formatString: "MMMM DD, YYYY")
-        description
+    current: github {
+      repository(name: "TIL", owner: "devgaram") {
+        post: object(oid: $id) {
+          ... on GitHub_Blob {
+            oid
+            text
+          }
+        }
       }
     }
-    previous: markdownRemark(id: { eq: $previousPostId }) {
-      fields {
-        slug
-      }
-      frontmatter {
-        title
+    previous: github {
+      repository(name: "TIL", owner: "devgaram") {
+        post: object(oid: $previousPostId) {
+          ... on GitHub_Blob {
+            oid
+            text
+          }
+        }
       }
     }
-    next: markdownRemark(id: { eq: $nextPostId }) {
-      fields {
-        slug
-      }
-      frontmatter {
-        title
+    next: github {
+      repository(name: "TIL", owner: "devgaram") {
+        post: object(oid: $nextPostId) {
+          ... on GitHub_Blob {
+            oid
+            text
+          }
+        }
       }
     }
   }

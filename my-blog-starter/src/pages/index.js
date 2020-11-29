@@ -1,44 +1,14 @@
 import React, { useMemo } from "react"
 import { Link, graphql } from "gatsby"
-import { gql, useQuery } from "@apollo/client"
 
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import ConvertHTML from "../components/convertHTML"
-import { getTitleRegExp, getDateRegExp } from "../utils/regExp"
-
-const GET_ALL_POST = gql`
-  {
-    repository(name: "TIL", owner: "devgaram") {
-      categories: object(expression: "master:") {
-        ... on Tree {
-          entries {
-            name
-            type
-            posts: object {
-              ... on Tree {
-                entries {
-                  name
-                  oid
-                  content: object {
-                    ... on Blob {
-                      text
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`
+import { getTitleRegExp, getDateRegExp, removeExtension } from "../utils/regExp"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata?.title || `Title`
-  const { loading, error, data: posts } = useQuery(GET_ALL_POST)
+  const posts = data.github
 
   const sortedPosts = useMemo(() => {
     if (!posts) return []
@@ -64,8 +34,6 @@ const BlogIndex = ({ data, location }) => {
       })
   }, [posts])
 
-  if (error) return null
-
   if (sortedPosts.length === 0) {
     return (
       <Layout location={location} title={siteTitle}>
@@ -87,7 +55,7 @@ const BlogIndex = ({ data, location }) => {
               <article className="post-list-item">
                 <header>
                   <h2>
-                    <Link to={`${category}/${name}`} itemProp="url">
+                    <Link to={oid} itemProp="url">
                       <span itemProp="headline">
                         {getTitleRegExp(content.text)}
                       </span>
@@ -111,6 +79,31 @@ export const pageQuery = graphql`
     site {
       siteMetadata {
         title
+      }
+    }
+    github {
+      repository(name: "TIL", owner: "devgaram") {
+        categories: object(expression: "master:") {
+          ... on GitHub_Tree {
+            entries {
+              name
+              type
+              posts: object {
+                ... on GitHub_Tree {
+                  entries {
+                    name
+                    oid
+                    content: object {
+                      ... on GitHub_Blob {
+                        text
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
