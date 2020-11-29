@@ -1,9 +1,8 @@
 import React from "react"
 import marked from "marked"
-import createDOMPurify from "dompurify"
+import DOMPurify from "dompurify"
 
 const ConvertHTML = ({ html }) => {
-  const DOMPurify = createDOMPurify(window)
   const convertedHTML = html ? DOMPurify.sanitize(marked(html)) : ""
 
   return (
