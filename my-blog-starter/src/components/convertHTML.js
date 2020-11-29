@@ -1,16 +1,22 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import marked from "marked"
-import DOMPurify from "dompurify"
+import createDOMPurify from "dompurify"
 
 const ConvertHTML = ({ html }) => {
-  const convertedHTML = html ? DOMPurify.sanitize(marked(html)) : ""
+  const [content, setContent] = useState()
+
+  useEffect(() => {
+    const DOMPurify = createDOMPurify(window)
+    const convertedHTML = html ? DOMPurify.sanitize(marked(html)) : ""
+    setContent(convertedHTML)
+  }, [html])
 
   return (
     <>
       <p
         className="markdown-body"
         dangerouslySetInnerHTML={{
-          __html: convertedHTML,
+          __html: content,
         }}
         itemProp="description"
       />

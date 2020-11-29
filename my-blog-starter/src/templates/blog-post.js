@@ -17,7 +17,7 @@ const BlogPostTemplate = ({ data, location }) => {
 
   return (
     <Layout location={location} title={siteTitle}>
-      <SEO title={getTitleRegExp(currentPost).toString()} description="" />
+      <SEO title={getTitleRegExp(currentPost)?.toString()} description="" />
       <article
         className="blog-post"
         itemScope
