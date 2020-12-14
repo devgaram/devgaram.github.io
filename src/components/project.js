@@ -30,13 +30,11 @@ const project = ({ project }) => {
     <div>
       <Title>{title}</Title>
       <Period>{`${start} ~ ${end || "진행 중"}`}</Period>
+      <Skills skills={skills} />
       <List>
         {description?.map(desc => (
           <Item key={desc}>{desc}</Item>
         ))}
-        <Item>
-          <Skills skills={skills} />
-        </Item>
       </List>
     </div>
   )

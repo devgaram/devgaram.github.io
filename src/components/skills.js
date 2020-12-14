@@ -6,17 +6,18 @@ const primary = "#f9fd5a"
 const List = styled.ul`
   display: flex;
   align-items: baseline;
+  flex-wrap: wrap;
   list-style: none;
-  margin: 0;
+  margin-bottom: 12px;
 `
 
 const Item = styled.li`
   background: ${primary};
-  margin-left: 8px;
+  margin: 0 8px 8px 0;
   font-size: 14px;
 
-  &:first-of-type {
-    margin-left: 0;
+  &:last-of-type {
+    margin-right: 0;
   }
 `
 
