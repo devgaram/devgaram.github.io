@@ -1,8 +1,19 @@
 language: node_js
 node_js:
- - node
+  - "stable"
 cache:
-  yarn: true
   directories:
     - node_modules
-script: yarn deploy
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  local_dir: public
+  keep-history: true
+  on:
+    branch: main
+before_script:
+  - "npm i -g gatsby"
+  - "yarn"
+script:
+  - "yarn deploy"
