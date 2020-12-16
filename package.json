@@ -61,6 +61,6 @@
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "deploy": "gatsby build && gh-pages -d public -r https://$GITHUB_TOKEN@github.com/devgaram/devgaram.github.io.git"
+    "deploy": "gatsby build && gh-pages -d public -r https://github.com/devgaram/devgaram.github.io.git"
   }
 }
