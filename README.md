@@ -1,3 +1,4 @@
+[![Build Status](https://www.travis-ci.com/devgaram/devgaram.github.io.svg?branch=develop)](https://www.travis-ci.com/devgaram/devgaram.github.io)
 <!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
 <p align="center">
   <a href="https://www.gatsbyjs.com">
