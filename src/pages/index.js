@@ -18,7 +18,7 @@ const BlogIndex = ({ data, location }) => {
         if (type !== "tree") return []
 
         return posts.entries
-          .filter(({ name }) => name !== "images")
+          .filter(({ name }) => name !== "images" && name !== ".DS_Store")
           .map(({ name, oid, content }) => {
             return { category, name, oid, content }
           })
@@ -34,6 +34,7 @@ const BlogIndex = ({ data, location }) => {
       })
   }, [posts])
 
+  console.log(sortedPosts)
   if (sortedPosts.length === 0) {
     return (
       <Layout location={location} title={siteTitle}>
